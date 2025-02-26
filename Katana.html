@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poligoni i Shenjtarise Katana</title>
+  <link rel="stylesheet" href="CSS/style.css">
+  <style>
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: inline-flex;
+      margin-right: 20px;
+    }
+
+    a {
+      text-decoration: none;
+      color: black;
+      padding: 10px 20px;
+    }
+
+    a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown-btn {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown-btn:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+
+    img {
+      width: 200px;
+      height: 200px;
+    }
+
+    .product-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px;
+      text-align: center;
+      width: 200px;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .product-card button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .product-card button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <img src="Images/Logo.jpg" alt="Logoja e Kompanise">
+    <ul>
+      <li><a href="#">Katana</a></li>
+      <li><a href="#">Rreth Nesh</a></li>
+      <li class="dropdown-btn">
+        <a href="#">Produktet & Serviset <i class="fas fa-caret-down"></i></a>
+        <div class="dropdown-content">
+          <a href="#arme">Arme te gjata dhe te shkrutra</a>
+          <a href="#veshje">Veshje</a>
+        </div>
+      </li>
+      <li><a href="#cart">Shporta</a></li>
+    </ul>
+  </header>
+
+  <main>
+    <h1>Poligoni i Shenjtarise Katana</h1>
+    <h2>Cka eshte Poligoni i Shenjtarise Katana?</h2>
+    <p>
+      Poligoni i Shenjtarise Katana eshte nje kompani e madhe kosovare e cila bene
+      shtiblerjen e armeve neper te gjithe Kosoven...
+    </p>
+
+    <h2 id="arme">Produktet tona</h2>
+    <div class="product-list">
+      <?php
+      
+      $conn = new mysqli("localhost", "root", "", "katana_db");
+
+      if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+      }
+
+      $sql = "SELECT * FROM products";
+      $result = $conn->query($sql);
+
+      if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          echo "<div class='product-card'>";
+          echo "<img src='Images/" . $row['image'] . "' alt='" . $row['name'] . "'>";
+          echo "<h3>" . $row['name'] . "</h3>";
+          echo "<p>" . $row['price'] . "</p>";
+          echo "<form method='post' action='cart.php'>";
+          echo "<input type='hidden' name='product_id' value='" . $row['id'] . "'>";
+          echo "<button type='submit'>Shto ne Shporte</button>";
+          echo "</form>";
+          echo "</div>";
+        }
+      } else {
+        echo "<p>No products available.</p>";
+      }
+
+      $conn->close();
+      ?>
+    </div>
+
+    <h2 id="cart">Shporta juaj</h2>
+    <div id="cart-items">
+      <?php
+      session_start();
+      if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+        echo "<p>Shporta juaj eshte bosh.</p>";
+      } else {
+        echo "<ul>";
+        foreach ($_SESSION['cart'] as $item) {
+          echo "<li>" . $item['name'] . " - " . $item['price'] . " <a href='remove_from_cart.php?id=" . $item['id'] . "'>Hiq</a></li>";
+        }
+        echo "</ul>";
+        echo "<a href='checkout.php'>Paguaj</a>";
+      }
+      ?>
+    </div>
+  </main>
+
+  <footer>
+    <h2>Kontakt</h2>
+    <form action="contact_handler.php" method="post">
+      <label for="name">Emri:</label>
+      <input type="text" id="name" name="name" placeholder="Shkruaj emrin">
+      <br>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Shkruaj email-in">
+      <br>
+
+      <label for="message">Mesazhi:</label>
+      <textarea id="message" name="message" rows="4" cols="50" placeholder="Shkruaj mesazhin tuaj"></textarea>
+      <br>
+
+      <button type="submit">Dergo</button>
+    </form>
+  </footer>
+</body>
+
+</html>

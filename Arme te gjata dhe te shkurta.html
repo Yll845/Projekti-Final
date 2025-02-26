@@ -1,0 +1,179 @@
+<?php
+// Step 1: Connect to Database
+$servername = "localhost";
+$username = "root"; // Change this if needed
+$password = ""; // Change this if needed
+$dbname = "your_database_name"; // Replace with your actual database name
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check Connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arme te gjata dhe te shkurta</title>
+  <link rel="stylesheet" href="CSS/style.css">
+  <style>
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: inline-flex; 
+      margin-right: 20px;
+    }
+
+    a {
+      text-decoration: none;
+      color: black;
+      padding: 10px 20px; 
+    }
+
+    a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown-btn {
+      position: relative; 
+      display: inline-block; 
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute; 
+      background-color: #f1f1f1;
+      min-width: 160px; 
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1; 
+    }
+
+    .dropdown-btn:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+
+    img {
+      width: 300px;
+      height: 300px;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <img class="logo" src="Images/Logo.jpg" alt="Logoja e Kompanise">
+
+  <ul>
+    <li><a href="#">Katana</a></li>
+    <li class="dropdown-btn">
+      <a href="#">Produktet & Serviset <i class="fas fa-caret-down"></i></a>
+      <div class="dropdown-content">
+        <a href="#">Arme te gjata dhe te shkurta</a>
+        <a href="#">Veshje </a>
+      </div>
+    </li>
+  </ul>
+
+  <h1>Arme</h1>
+  <h2>Cilat Arme i posedon kompania Katana</h2>
+  <p>
+    Si thame edhe me heret Poligoni Katana ka nje shumellojshmeri te armeve...
+  </p>
+
+  <h2>A mund te na tregoni disa nga keto arme</h2>
+  <h2>Sigurisht ja ku i keni:</h2>
+
+  <img src="Images/CZ e zeze.jpg" alt="CZ-P09">
+  <img src="Images/Arme e gjate.jpg" alt="Nje lloj i armes se gjate">
+  <img src="Images/Kallash.jpg" alt="Kallash">
+  <img src="Images/Parabell.jpg" alt="Parabell">
+  <img src="Images/Pushke.jpg" alt="Pushke">
+  <img src="Images/Revole.jpg" alt="Revole">
+  <img src="Images/Sniper.jpg" alt="Sniper">
+  <img src="Images/Arme.jpg" alt="Arme">
+
+  <h2>A ka ndonje hapesire ku mund ti tregojme aftesite tona me arme?</h2>
+  <p>Sigurisht qe po...</p>
+
+  <img src="Images/Poligoni i brendshem.jpg" alt="Poligoni i brendshem">
+  <img src="Images/Poligoni i brendshem2.jpg" alt="Poligoni i brendshem">  
+  <img src="Images/Poligoni i jashtem.jpg" alt="Poligoni i jashtem">
+
+  <h2>Product Information</h2>
+  <form>
+    <label for="product-name">Product Name:</label>
+    <input type="text" id="product-name" name="product-name" required>
+    <br>
+    <label for="product-price">Price:</label>
+    <input type="number" id="product-price" name="product-price" required>
+    <br><br>
+    <h2>Customer Information</h2>
+    <label for="customer-name">Customer Name:</label>
+    <input type="text" id="customer-name" name="customer-name" required>
+    <br>
+    <label for="customer-email">Email Address:</label>
+    <input type="email" id="customer-email" name="customer-email" required>
+    <br><br>
+    <button type="submit">Buy Now</button>
+  </form>
+
+  <h2>Products Table</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      // Fetch product data from database
+      $result = $conn->query("SELECT * FROM products");
+
+      if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+              echo "<tr>";
+              echo "<td>" . $row['id'] . "</td>";
+              echo "<td>" . htmlspecialchars($row['title']) . "</td>";
+              echo "<td>" . htmlspecialchars($row['description']) . "</td>";
+              echo "<td>" . $row['quantity'] . "</td>";
+              echo "<td>$" . $row['price'] . "</td>";
+              echo "</tr>";
+          }
+      } else {
+          echo "<tr><td colspan='5'>No products found.</td></tr>";
+      }
+      ?>
+    </tbody>
+  </table>
+
+</body>
+</html>
